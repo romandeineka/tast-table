@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Person } from "./database";
+import PersonRow from "./components/PersonRow/personRow";
 
 //TASKS:
 // 1. average salary
@@ -72,18 +73,9 @@ export const PeopleTable = ({ people }: PeopleTableProps) => {
           <th>Yearly salary</th>
         </thead>
         <tbody>
-          {sortedBySalary.map((p, index) => {
-            return (
-              <tr key={index}>
-                <td className={p.age === youngestPerson.age ? "highlight" : ""}>
-                  {p.name}
-                </td>
-                <td>{p.age}</td>
-                <td>{p.monthlySalary}</td>
-                <td>{p.monthlySalary * 12}</td>
-              </tr>
-            );
-          })}
+          {sortedBySalary.map((p, index) => (
+            <PersonRow key={index} youngestPerson={youngestPerson} p={p} />
+          ))}
         </tbody>
       </table>
       <span>Avarage salary: {avarageSalary}</span>
