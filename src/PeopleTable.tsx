@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Person } from "./database";
-import PersonRow from "./components/PersonRow/personRow";
+import PersonRow from "./components/PersonRow/PersonRow";
+import Modal from "./components/Modal/Modal";
 
 //TASKS:
 // 1. average salary
@@ -20,14 +21,16 @@ enum SortDirection {
 export const PeopleTable = ({ people }: PeopleTableProps) => {
   // const [averageSalary, setAverageSalary] = useState<number>(111);
   const [sortedSalary, setSortedSalary] = useState(SortDirection.activeAsc);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [peopleState, setPeopleState] = useState<Person[]>(people);
 
   const avarageSalary = useMemo(
     () =>
-      people.reduce(
+      peopleState.reduce(
         (accumulator, person) => accumulator + person.monthlySalary,
         0
       ) / people.length,
-    [people]
+    [peopleState]
   );
 
   const youngestPerson = useMemo(
@@ -40,11 +43,24 @@ export const PeopleTable = ({ people }: PeopleTableProps) => {
 
   const sortedBySalary =
     sortedSalary === SortDirection.activeAsc
-      ? [...people].sort((a, b) => a.monthlySalary - b.monthlySalary)
-      : [...people].sort((a, b) => b.monthlySalary - a.monthlySalary);
+      ? [...peopleState].sort((a, b) => a.monthlySalary - b.monthlySalary)
+      : [...peopleState].sort((a, b) => b.monthlySalary - a.monthlySalary);
 
   return (
     <>
+      <div>
+        <button onClick={() => setShowModal(true)} className="">
+          Add user
+        </button>
+        {showModal && (
+          <Modal
+            setShowModal={setShowModal}
+            onSubmit={(newPerson) => {
+              setPeopleState((prevPeople) => [...prevPeople, newPerson]);
+            }}
+          />
+        )}
+      </div>
       <table id="table">
         <thead>
           <th>Name</th>
@@ -78,7 +94,7 @@ export const PeopleTable = ({ people }: PeopleTableProps) => {
           ))}
         </tbody>
       </table>
-      <span>Avarage salary: {avarageSalary}</span>
+      <span>Average salary: {avarageSalary}</span>
     </>
   );
 };
