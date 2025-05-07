@@ -23,8 +23,9 @@ export const PeopleTable = ({ people }: PeopleTableProps) => {
   const [sortedSalary, setSortedSalary] = useState(SortDirection.activeAsc);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [peopleState, setPeopleState] = useState<Person[]>(people);
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
-  const avarageSalary = useMemo(
+  const averageSalary = useMemo(
     () =>
       peopleState.reduce(
         (accumulator, person) => accumulator + person.monthlySalary,
@@ -49,15 +50,25 @@ export const PeopleTable = ({ people }: PeopleTableProps) => {
   return (
     <>
       <div>
-        <button onClick={() => setShowModal(true)} className="">
+        <button onClick={() => setShowModal(true)} className="btn-add-user">
           Add user
         </button>
         {showModal && (
           <Modal
             setShowModal={setShowModal}
             onSubmit={(newPerson) => {
-              setPeopleState((prevPeople) => [...prevPeople, newPerson]);
+              if (selectedPerson) {
+                setPeopleState((prevPeople) =>
+                  prevPeople.map((p) =>
+                    p.name === selectedPerson.name ? newPerson : p
+                  )
+                );
+              } else {
+                setPeopleState((prevPeople) => [...prevPeople, newPerson]);
+              }
+              setSelectedPerson(null);
             }}
+            selectedPerson={selectedPerson}
           />
         )}
       </div>
@@ -90,11 +101,19 @@ export const PeopleTable = ({ people }: PeopleTableProps) => {
         </thead>
         <tbody>
           {sortedBySalary.map((p, index) => (
-            <PersonRow key={index} youngestPerson={youngestPerson} p={p} />
+            <PersonRow
+              key={index}
+              isYoungest={youngestPerson.age === p.age}
+              person={p}
+              onEditPerson={() => {
+                setShowModal(true);
+                setSelectedPerson(p);
+              }}
+            />
           ))}
         </tbody>
       </table>
-      <span>Average salary: {avarageSalary}</span>
+      <span>Average salary: {averageSalary}</span>
     </>
   );
 };

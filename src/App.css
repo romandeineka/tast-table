@@ -16,9 +16,14 @@ td {
 }
 .wrapperButton {
   display: flex;
-  gap:20px;
+  gap: 20px;
   justify-content: center;
 }
 .active {
   background-color: red;
+}
+.btn-add-user {
+  width: 100px;
+  height: 50px;
+  margin-bottom: 20px;
 }

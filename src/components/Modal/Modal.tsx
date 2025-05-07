@@ -5,28 +5,34 @@ import { Person } from "../../database";
 
 type Props = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  onSubmit: (newPerson: Person) => void;
+  onSubmit: (updatedPerson: Person) => void;
+  selectedPerson: Person | null;
 };
 
 export default function Modal({
   setShowModal,
   onSubmit,
+  selectedPerson,
 }: Props) {
-  const [valueName, setValueName] = useState<string>("");
-  const [ageName, setAgeName] = useState<number>(0);
-  const [valueMonthly, setValueMonthly] = useState<number>(0);
+  const [valueName, setValueName] = useState<string>(
+    selectedPerson?.name ?? ""
+  );
+  const [ageName, setAgeName] = useState<number>(selectedPerson?.age ?? 0);
+  const [valueMonthly, setValueMonthly] = useState<number>(
+    selectedPerson?.monthlySalary ?? 0
+  );
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    const newPerson: Person = {
+    const updatedPerson: Person = {
       name: valueName,
       age: ageName,
       monthlySalary: valueMonthly,
       yearlySalary: valueMonthly * 12,
     };
 
-    onSubmit(newPerson);
+    onSubmit(updatedPerson);
 
     setValueName("");
     setAgeName(0);
@@ -47,7 +53,7 @@ export default function Modal({
           <IoMdClose />
         </div>
         <main className="modal-mainContents">
-          <form action="" onSubmit={handleSubmit} className="form-wrapper">
+          <form onSubmit={handleSubmit} className="form-wrapper">
             <label>
               Name:
               <input
