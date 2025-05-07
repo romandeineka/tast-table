@@ -2,19 +2,19 @@ import React from "react";
 import { Person } from "../../database";
 
 type Props = {
-  youngestPerson: Person;
-  p: Person;
+  isYoungest: boolean;
+  person: Person;
+  onEditPerson: () => void;
 };
 
-export default function PersonRow({ youngestPerson, p }: Props) {
+export default function PersonRow({ isYoungest, person, onEditPerson }: Props) {
   return (
     <tr>
-      <td className={p.age === youngestPerson.age ? "highlight" : ""}>
-        {p.name}
-      </td>
-      <td>{p.age}</td>
-      <td>{p.monthlySalary}</td>
-      <td>{p.monthlySalary * 12}</td>
+      <td className={isYoungest ? "highlight" : ""}>{person.name}</td>
+      <td>{person.age}</td>
+      <td>{person.monthlySalary}</td>
+      <td>{person.monthlySalary * 12}</td>
+      <button onClick={onEditPerson}>edit</button>
     </tr>
   );
 }
